@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package view;
 
 import java.sql.SQLException;
@@ -16,22 +11,20 @@ import javax.swing.table.DefaultTableModel;
 import model.ClientsStats;
 import service.ClientsStatsService;
 
-/**
- *
- * @author Roman
- */
-public class MainFrame extends javax.swing.JFrame {
-
-    /**
-     * Creates new form MainFrame
-     */
-    
+public class MainFrame extends javax.swing.JFrame { 
     private JComboBox<String> fieldComboBox;
     private JTable paymentTable;
     private JScrollPane scrollPane;
     private final ClientsStatsService statsService;
     private final List<ClientsStats> payments;
-    DefaultTableModel model;
+    private DefaultTableModel model;
+    
+    private String zkpoA;
+    private String zkpoB;
+    
+    String[] columnsNames = new String [] {
+        "ЄДРПО платника", "Платник", "ЄДРПО отримувача", "Отримувач", "Загальна кількість операцій", "Загальна сума"
+    };
     public MainFrame() throws SQLException {
         initComponents();
         statsService = new ClientsStatsService();
@@ -39,7 +32,8 @@ public class MainFrame extends javax.swing.JFrame {
         model = (DefaultTableModel) jTable1.getModel();
         
         for (ClientsStats stats : payments) {
-            model.addRow(new Object[]{stats.zkpoCode1, stats.name1, stats.zkpoCode2, stats.name2, stats.sum, stats.amount});
+            model.addRow(new Object[]{stats.getZkpoCode1(), stats.getName1(),
+                stats.getZkpoCode2(), stats.getName2(), stats.getSum(), stats.getAmount()});
         }
     }
     
@@ -53,20 +47,16 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jSplitPane1 = new javax.swing.JSplitPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
-            },
+            null,
             new String [] {
-                "ЄДРПО платника", "Платник", "ЄДРПО отримувача", "Отримувач", "Загальна кількість операцій", "Загальна сума"
+                "ЄДРПО платника", "Платник", "ЄДРПО отримувача", "Отримувач", "Загальна сума", "Загальна кількість операцій"
             }
         ) {
             Class[] types = new Class [] {
@@ -85,33 +75,59 @@ public class MainFrame extends javax.swing.JFrame {
             }
 
         });
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTable1);
+
+        jButton1.setText("Детально");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(0, 1, Short.MAX_VALUE)
-                .addComponent(jTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 899, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 1, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 608, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jButton1)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+        TwoClientsStats form = null;
+        try {
+            form = new TwoClientsStats(zkpoA, zkpoB);
+        } catch (SQLException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        form.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+
+        int row = jTable1.getSelectedRow();
+        zkpoA = (String) model.getValueAt(row, 0);
+        zkpoB = (String) model.getValueAt(row, 2);
+    }//GEN-LAST:event_jTable1MouseClicked
+
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -130,7 +146,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        /* Create and display the form */
+
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
@@ -143,7 +159,8 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }
