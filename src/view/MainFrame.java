@@ -52,6 +52,7 @@ public class MainFrame extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("docdays201903 table");
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             null,
